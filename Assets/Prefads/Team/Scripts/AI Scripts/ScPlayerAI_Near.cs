@@ -105,8 +105,10 @@ public class ScPlayerAI_Near : MonoBehaviour {
         } // Fin de - else if (ScGameGlobalData.Team_Far_Control == "randon")
         else if (ScGameGlobalData.Team_Near_Control == "ai")
         {
-            movement = -(profits[0].transform.position - transform.position).normalized;
-            
+            GameObject nearestProfit = getNearestProfit();
+
+            movement = -(nearestProfit.transform.position - transform.position).normalized;
+
             playersMovUnits = 25f;
         } // Fin de - else if (ScGameGlobalData.Team_Far_Control == "randon")
         else { Debug.Log("From ScPlayerAI_Near => FixedUpdate => Error 001"); }
@@ -114,7 +116,24 @@ public class ScPlayerAI_Near : MonoBehaviour {
         // CALlING TO THIS FUNCTION YOU CAN MANAGE THE ELEMENT WITH THE ARTIFICIAL INTELLIGENCE THAT YOU MUST DEVELOP
         GetComponent<ScPlayerControl>().moveOn(movement, playersMovUnits);
     }  // Fin de - void FixedUpdate()
-    
+
+    private GameObject getNearestProfit()
+    {
+        GameObject nearestProfit = profits[0];
+        float profitDistance = Vector3.Distance(this.transform.position, profits[0].transform.position);
+        foreach (GameObject profit in profits)
+        {
+            if (Vector3.Distance(this.transform.position, profit.transform.position) < profitDistance)
+            {
+                nearestProfit = profit;
+                profitDistance = Vector3.Distance(this.transform.position, profit.transform.position);
+            }
+
+        }
+
+        return nearestProfit;
+    }
+
     public void setProfits(GameObject[] profits)
     {
         this.profits = profits;
