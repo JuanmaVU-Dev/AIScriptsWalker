@@ -91,14 +91,14 @@ public class ScMinionAI_Near : MonoBehaviour {
                 date_lastChamge = dateNow;  // We actualizate date_lastChamge
             }
         }
-        else //if (ScGameGlobalData.Team_Near_Control == "ai")
+        else if (ScGameGlobalData.Team_Near_Control == "ai")
         {
             float move_X = gameObject.transform.position.x - (leader.transform.position.x+(ai_orbitalOffset.x*10f));
             float move_Z = gameObject.transform.position.z - (leader.transform.position.z + (ai_orbitalOffset.y * 10f));
             movement = new Vector3(move_X, 0.0f, move_Z).normalized;
 
             float distance= Vector3.Distance(gameObject.transform.position, leader.transform.position);
-            float minionsMovUnits = Vector3.Distance(gameObject.transform.position, leader.transform.position);
+            minionsMovUnits = Vector3.Distance(gameObject.transform.position, leader.transform.position);
             if (distance>5f)
             {
                 minionsMovUnits = 1 * ScGameGlobalData.maxMinionsMovUnits;
@@ -106,6 +106,8 @@ public class ScMinionAI_Near : MonoBehaviour {
             else
             {
                 minionsMovUnits = (distance/5f) * ScGameGlobalData.maxMinionsMovUnits;
+                minionsMovUnits = easeInOutBack(minionsMovUnits);
+                //minionsMovUnits = Mathf.Sin((minionsMovUnits * (float) Math.PI) / 2);
             }
             
             //Debug.Log("From ScPlayerAI_Far => FixedUpdate => AI is not programated");
@@ -117,6 +119,16 @@ public class ScMinionAI_Near : MonoBehaviour {
     public void setTUID(int id)
     {
         TUID = id;
+    }
+
+    float easeInOutBack(float speed)
+    {
+        const float c1 = 1.70158f;
+        const float c2 = c1 * 1.525f;
+
+        return speed < 0.5
+          ? (float)(Math.Pow(2 * speed, 2) * ((c2 + 1) * 2 * speed - c2)) / 2
+          : (float)(Math.Pow(2 * speed - 2, 2) * ((c2 + 1) * (speed * 2 - 2) + c2) + 2) / 2;
     }
 
     public void setLeader(GameObject leader)

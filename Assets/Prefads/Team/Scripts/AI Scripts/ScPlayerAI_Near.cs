@@ -23,6 +23,8 @@ public class ScPlayerAI_Near : MonoBehaviour {
     public Vector3 movement;  // Direction of the force that will be exerted on the gameobject
     public float playersMovUnits;  //  Amount of force that will be exerted on the gameobject
 
+    private GameObject[] profits;
+
     /// <summary>
     /// ///////////  ARTIFICIAL INTELLIGENCE  MINION Script 
     /// Author : 	
@@ -103,13 +105,19 @@ public class ScPlayerAI_Near : MonoBehaviour {
         } // Fin de - else if (ScGameGlobalData.Team_Far_Control == "randon")
         else if (ScGameGlobalData.Team_Near_Control == "ai")
         {
-            Debug.Log("From ScPlayerAI_Near => FixedUpdate => AI is not programated");
+            movement = -(profits[0].transform.position - transform.position).normalized;
+            
+            playersMovUnits = 25f;
         } // Fin de - else if (ScGameGlobalData.Team_Far_Control == "randon")
         else { Debug.Log("From ScPlayerAI_Near => FixedUpdate => Error 001"); }
 
         // CALlING TO THIS FUNCTION YOU CAN MANAGE THE ELEMENT WITH THE ARTIFICIAL INTELLIGENCE THAT YOU MUST DEVELOP
         GetComponent<ScPlayerControl>().moveOn(movement, playersMovUnits);
     }  // Fin de - void FixedUpdate()
-
+    
+    public void setProfits(GameObject[] profits)
+    {
+        this.profits = profits;
+    }
 
 }  // Fin de - public class ScPlayerAI_Near : MonoBehaviour {

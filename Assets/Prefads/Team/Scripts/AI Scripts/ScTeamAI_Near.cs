@@ -25,12 +25,17 @@ public class ScTeamAI_Near : MonoBehaviour {
     {
         GameObject[] leaders = GameObject.FindGameObjectsWithTag("Player");
         GameObject[] minions = GameObject.FindGameObjectsWithTag("Minion");
+        GameObject[] profits = GameObject.FindGameObjectsWithTag("Profit");
         GameObject TeamLeader = new GameObject();
+        ScPlayerAI_Near playerAI = new ScPlayerAI_Near();
+        ScGameGlobalData.Team_Near_Control = "ai";
         foreach (GameObject leader in leaders)
         {
             if (leader.GetComponent<ScPlayerControl>().Team=="Near")
             {
                 TeamLeader = leader;
+                playerAI = TeamLeader.GetComponent<ScPlayerAI_Near>();
+                playerAI.setProfits(profits);
             }
         }
         int i = 0;
