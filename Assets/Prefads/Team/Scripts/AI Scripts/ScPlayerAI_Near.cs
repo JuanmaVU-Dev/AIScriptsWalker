@@ -118,11 +118,11 @@ public class ScPlayerAI_Near : MonoBehaviour {
         {
             GameObject nearestProfit = getNearestProfit();
 
-            GameObject nearestEnemyMinion = getNearestProfit();
+            GameObject nearestEnemyMinion = getNearestEnemy();
 
             movement = -(nearestProfit.transform.position - transform.position).normalized;
 
-            playersMovUnits = 25f * InOutQuadBlend(Vector3.Distance(nearestProfit.transform.position, transform.position));
+            playersMovUnits = 25f;
 
             m_HitDetect = Physics.BoxCast(m_Collider.bounds.center, transform.localScale, -movement, out m_Hit, transform.rotation, m_MaxDistance);
             if (m_HitDetect)

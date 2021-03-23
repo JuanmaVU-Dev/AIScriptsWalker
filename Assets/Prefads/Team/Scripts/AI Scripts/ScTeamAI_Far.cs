@@ -23,6 +23,38 @@ public class ScTeamAI_Far : MonoBehaviour {
     /// </summary>
     void Start () {
 
+        GameObject[] leaders = GameObject.FindGameObjectsWithTag("Player");
+        GameObject[] minions = GameObject.FindGameObjectsWithTag("Minion");
+        List<GameObject> enemyMinions = new List<GameObject>();
+        GameObject[] profits = GameObject.FindGameObjectsWithTag("Profit");
+        GameObject TeamLeader = new GameObject();
+        ScPlayerAI_Far playerAI = new ScPlayerAI_Far();
+        foreach (GameObject leader in leaders)
+        {
+            if (leader.GetComponent<ScPlayerControl>().Team == "Far")
+            {
+                TeamLeader = leader;
+                playerAI = TeamLeader.GetComponent<ScPlayerAI_Far>();
+                playerAI.setProfits(profits);
+            }
+        }
+        int i = 0;
+        foreach (GameObject minion in minions)
+        {
+            if (minion.GetComponent<ScMinionControl>().Team == "Far")
+            {
+                minion.GetComponent<ScMinionAI_Far>().setTUID(i);
+                minion.GetComponent<ScMinionAI_Far>().setLeader(TeamLeader);
+                i++;
+            }
+            else
+            {
+                enemyMinions.Add(minion);
+            }
+        }
+
+        playerAI.setEnemyMinions(enemyMinions);
+
     }  // FIn de - void Start()
 
     // Update is called once per frame
