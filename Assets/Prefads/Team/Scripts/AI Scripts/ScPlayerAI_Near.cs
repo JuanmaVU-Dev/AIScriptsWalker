@@ -25,6 +25,12 @@ public class ScPlayerAI_Near : MonoBehaviour {
 
     private GameObject[] profits;
 
+    float m_MaxDistance;
+    bool m_HitDetect;
+
+    Collider m_Collider;
+    RaycastHit m_Hit;
+
     /// <summary>
     /// ///////////  ARTIFICIAL INTELLIGENCE  MINION Script 
     /// Author : 	
@@ -38,6 +44,10 @@ public class ScPlayerAI_Near : MonoBehaviour {
 
         movement = new Vector3(0.0f, 0.0f, 0.0f); // We initialize the date value
         playersMovUnits = 1f; // We initialize the date value
+
+
+        m_MaxDistance = 300.0f;
+        m_Collider = GetComponent<Collider>();
     }  // FIn de - void Start()
 
     // Update is called once per frame
@@ -109,6 +119,25 @@ public class ScPlayerAI_Near : MonoBehaviour {
 
             movement = -(nearestProfit.transform.position - transform.position).normalized;
 
+            m_HitDetect = Physics.BoxCast(m_Collider.bounds.center, transform.localScale, -movement, out m_Hit, transform.rotation, m_MaxDistance);
+            if (m_HitDetect)
+            {
+                //Output the name of the Collider your Box hit
+                
+                if (m_Hit.transform.tag == "Minion" && m_Hit.transform.gameObject.GetComponent<ScMinionControl>().Team == "Far")
+                {
+                    Debug.Log("------------------Hit minion enemy------------------------");
+                    movement = -movement;
+                }
+            }
+
+
+
+            //if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
+            //{
+            //Debug.DrawRay(transform.position, movement * 10000, Color.red);
+            //}
+
             playersMovUnits = 25f;
         } // Fin de - else if (ScGameGlobalData.Team_Far_Control == "randon")
         else { Debug.Log("From ScPlayerAI_Near => FixedUpdate => Error 001"); }
@@ -128,7 +157,6 @@ public class ScPlayerAI_Near : MonoBehaviour {
                 nearestProfit = profit;
                 profitDistance = Vector3.Distance(this.transform.position, profit.transform.position);
             }
-
         }
 
         return nearestProfit;
@@ -137,6 +165,28 @@ public class ScPlayerAI_Near : MonoBehaviour {
     public void setProfits(GameObject[] profits)
     {
         this.profits = profits;
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        //Check if there has been a hit yet
+        if (m_HitDetect)
+        {
+            //Draw a Ray forward from GameObject toward the hit
+            Gizmos.DrawRay(transform.position, -movement * m_Hit.distance);
+            //Draw a cube that extends to where the hit exists
+            Gizmos.DrawWireCube(transform.position + -movement * m_Hit.distance, transform.localScale);
+        }
+        //If there hasn't been a hit yet, draw the ray at the maximum distance
+        else
+        {
+            //Draw a Ray forward from GameObject toward the maximum distance
+            Gizmos.DrawRay(transform.position, -movement * m_MaxDistance);
+            //Draw a cube at the maximum distance
+            Gizmos.DrawWireCube(transform.position + -movement * m_MaxDistance, transform.localScale);
+        }
     }
 
 }  // Fin de - public class ScPlayerAI_Near : MonoBehaviour {

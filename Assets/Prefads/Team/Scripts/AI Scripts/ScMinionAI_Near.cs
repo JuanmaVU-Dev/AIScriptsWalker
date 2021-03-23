@@ -83,7 +83,7 @@ public class ScMinionAI_Near : MonoBehaviour {
                 // We obtain "movement" and "minionsMovUnits" randonly
                 float move_X = Random.Range(-1.0f, 1f);
                 float move_Z = Random.Range(-1f, 1f);
-                float minionsMovUnits = Random.Range(0.0f, 1f);
+                minionsMovUnits = Random.Range(0.0f, 1f);
 
                 minionsMovUnits = minionsMovUnits * ScGameGlobalData.maxMinionsMovUnits;
                 movement = new Vector3(move_X, 0.0f, move_Z);
