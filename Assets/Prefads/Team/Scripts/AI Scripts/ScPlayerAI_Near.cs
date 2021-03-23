@@ -24,6 +24,7 @@ public class ScPlayerAI_Near : MonoBehaviour {
     public float playersMovUnits;  //  Amount of force that will be exerted on the gameobject
 
     private GameObject[] profits;
+    List<GameObject> enemyMinions;
 
     float m_MaxDistance;
     bool m_HitDetect;
@@ -117,7 +118,11 @@ public class ScPlayerAI_Near : MonoBehaviour {
         {
             GameObject nearestProfit = getNearestProfit();
 
+            GameObject nearestEnemyMinion = getNearestProfit();
+
             movement = -(nearestProfit.transform.position - transform.position).normalized;
+
+            playersMovUnits = 25f * InOutQuadBlend(Vector3.Distance(nearestProfit.transform.position, transform.position));
 
             m_HitDetect = Physics.BoxCast(m_Collider.bounds.center, transform.localScale, -movement, out m_Hit, transform.rotation, m_MaxDistance);
             if (m_HitDetect)
@@ -128,17 +133,15 @@ public class ScPlayerAI_Near : MonoBehaviour {
                 {
                     Debug.Log("------------------Hit minion enemy------------------------");
                     movement = -movement;
+                    playersMovUnits = 25f;
                 }
             }
 
+            if (Vector3.Distance(transform.position, nearestEnemyMinion.transform.position) < 6f){
+                movement = (transform.position - nearestEnemyMinion.transform.position);
+                playersMovUnits = 25f;
+            }
 
-
-            //if(Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
-            //{
-            //Debug.DrawRay(transform.position, movement * 10000, Color.red);
-            //}
-
-            playersMovUnits = 25f;
         } // Fin de - else if (ScGameGlobalData.Team_Far_Control == "randon")
         else { Debug.Log("From ScPlayerAI_Near => FixedUpdate => Error 001"); }
 
@@ -162,10 +165,41 @@ public class ScPlayerAI_Near : MonoBehaviour {
         return nearestProfit;
     }
 
+    private GameObject getNearestEnemy()
+    {
+        GameObject nearestEnemy = enemyMinions.ToArray()[0];
+        float enemyDistance = Vector3.Distance(this.transform.position, nearestEnemy.transform.position);
+        foreach (GameObject enemy in enemyMinions)
+        {
+            if (Vector3.Distance(this.transform.position, enemy.transform.position) < enemyDistance)
+            {
+                nearestEnemy = enemy;
+                enemyDistance = Vector3.Distance(this.transform.position, enemy.transform.position);
+            }
+        }
+
+        return nearestEnemy;
+    }
+
     public void setProfits(GameObject[] profits)
     {
         this.profits = profits;
     }
+
+
+    public void setEnemyMinions(List<GameObject> enemyMinions)
+    {
+        this.enemyMinions = enemyMinions;
+    }
+
+    float InOutQuadBlend(float t)
+    {
+        if (t <= 0.5f)
+            return 2.0f * t * t;
+        t -= 0.5f;
+        return 2.0f * t * (1.0f - t) + 0.5f;
+    }
+
 
     void OnDrawGizmos()
     {

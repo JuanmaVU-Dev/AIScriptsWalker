@@ -25,6 +25,7 @@ public class ScTeamAI_Near : MonoBehaviour {
     {
         GameObject[] leaders = GameObject.FindGameObjectsWithTag("Player");
         GameObject[] minions = GameObject.FindGameObjectsWithTag("Minion");
+        List<GameObject> enemyMinions = new List<GameObject>();
         GameObject[] profits = GameObject.FindGameObjectsWithTag("Profit");
         GameObject TeamLeader = new GameObject();
         ScPlayerAI_Near playerAI = new ScPlayerAI_Near();
@@ -46,7 +47,13 @@ public class ScTeamAI_Near : MonoBehaviour {
                 minion.GetComponent<ScMinionAI_Near>().setLeader(TeamLeader);
                 i++;
             }
+            else
+            {
+                enemyMinions.Add(minion);
+            }
         }
+
+        playerAI.setEnemyMinions(enemyMinions);
     }  // FIn de - void Start()
 
     // Update is called once per frame
